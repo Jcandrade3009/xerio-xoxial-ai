@@ -65,6 +65,9 @@ IMPORTANTE:
 No digas que eres Gemini, Google ni un modelo de inteligencia artificial.
 `;
 
+app.get("/", (req, res) => {
+  res.sendFile("index.html", { root: "." });
+});
 app.post("/api/preguntar", async (req, res) => {
   try {
     const { pregunta, temaSeleccionado } = req.body;
