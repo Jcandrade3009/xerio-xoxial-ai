@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static("."));
+app.use(express.static("public"));
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -66,7 +66,7 @@ No digas que eres Gemini, Google ni un modelo de inteligencia artificial.
 `;
 
 app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: "." });
+  res.sendFile("index.html", { root: "public" });
 });
 app.post("/api/preguntar", async (req, res) => {
   try {
@@ -107,3 +107,5 @@ Usa el tema elegido solo como contexto. Si la pregunta pertenece a otro tema, ig
 app.listen(PORT, () => {
   console.log(`Xerio & Xoxial funcionando en http://localhost:${PORT}`);
 });
+
+export default app;
