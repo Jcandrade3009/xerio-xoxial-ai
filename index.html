@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xerio & Xoxial AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #eef7ff, #f7f2ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: white;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 24px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .hero img {
+      width: 100%;
+      max-width: 230px;
+      display: block;
+      border-radius: 20px;
+    }
+
+    .hero-text h1 {
+      margin: 0 0 10px;
+      font-size: 42px;
+    }
+
+    .hero-text p {
+      margin: 0;
+      color: #666;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .temas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tema {
+      border: 2px solid #e5e5e5;
+      background: #fafafa;
+      padding: 16px 10px;
+      border-radius: 18px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .tema:hover {
+      transform: translateY(-2px);
+      background: #f2f2f2;
+    }
+
+    .tema.activo {
+      border-color: #222;
+      background: #222;
+      color: white;
+    }
+
+    .seleccion {
+      text-align: center;
+      margin: 10px 0 18px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+      padding: 16px;
+      font-size: 18px;
+      border-radius: 16px;
+      border: 2px solid #ddd;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #777;
+    }
+
+    .acciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .boton {
+      padding: 15px;
+      border: none;
+      border-radius: 16px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .microfono {
+      background: #f3f3f3;
+      color: #222;
+      border: 2px solid #ddd;
+    }
+
+    .microfono.escuchando {
+      background: #222;
+      color: white;
+      border-color: #222;
+    }
+
+    .preguntar {
+      background: #222;
+      color: white;
+    }
+
+    .boton:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .respuesta {
+      margin-top: 25px;
+      padding: 22px;
+      border-radius: 18px;
+      background: #f5f7fa;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      min-height: 60px;
+      font-size: 17px;
+    }
+
+    .respuesta-acciones {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .escuchar {
+      padding: 11px 16px;
+      border: 2px solid #ddd;
+      background: white;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .estado-voz {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #777;
+      min-height: 20px;
+    }
+
+.sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.sugerencia {
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sugerencia:hover {
+  background: #f3f3f3;
+}
+
+.continuar {
+  margin-top: 14px;
+  text-align: center;
+}
+
+.continuar button {
+  width: 100%;
+  border: none;
+  background: #222;
+  color: white;
+  padding: 15px 18px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.continuar button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+.historial {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.historial h3 {
+  margin-bottom: 14px;
+}
+
+.item-historial {
+  background: #f7f7f7;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+
+.item-historial .pregunta-historial {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.item-historial .respuesta-historial {
+  line-height: 1.5;
+  color: #444;
+}
+
+    @media (max-width: 700px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero img {
+        margin: 0 auto;
+        max-width: 180px;
+      }
+
+      .hero-text h1 {
+        font-size: 34px;
+      }
+
+      .temas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .acciones {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <div class="hero">
+      <img
+        src="assets/xerio-xoxial.jpg"
+        alt="Xerio y Xoxial"
+      />
+
+      <div class="hero-text">
+        <h1>Xerio & Xoxial</h1>
+        <p>
+          Explora ciencia, historia, espacio, animales, tecnología
+          y curiosidades. Elige un tema o pregunta lo que quieras aprender.
+        </p>
+      </div>
+    </div>
+
+    <div class="temas">
+      <button class="tema" onclick="seleccionarTema(this, 'Ciencia y Tierra')">
+        🌋 Ciencia y Tierra
+      </button>
+
+      <button class="tema" onclick="seleccionarTema(this, 'Espacio')">
+        🚀 Espacio
+      </button>
+
+      <button class="tema" onclick="seleccionarTema(this, 'Historia')">
+        🏛️ Historia
+      </button>
+
+      <button class="tema" onclick="seleccionarTema(this, 'Animales')">
+        🐾 Animales
+      </button>
+
+      <button class="tema" onclick="seleccionarTema(this, 'Tecnología y Ciencia')">
+        🔬 Tecnología
+      </button>
+
+      <button class="tema" onclick="seleccionarTema(this, 'Curiosidades')">
+        ❓ Curiosidades
+      </button>
+    </div>
+
+    <div class="seleccion" id="seleccion">
+      Ningún tema seleccionado
+    </div>
+
+    <div class="sugerencias" id="sugerencias"></div>
+
+<div style="text-align:center; margin-bottom:18px;">
+  <button class="sugerencia" onclick="sorprendeme()">
+    🎲 Sorpréndeme
+  </button>
+  <button class="sugerencia" onclick="nuevaAventura()">
+  ✨ Nueva aventura
+</button>
+</div>
+
+    <textarea
+      id="pregunta"
+      placeholder="Ejemplo: ¿Por qué los volcanes hacen erupción?"
+    ></textarea>
+
+    <div class="acciones">
+      <button
+        class="boton microfono"
+        id="microfono"
+        onclick="activarMicrofono()"
+      >
+        🎤 Preguntar hablando
+      </button>
+
+      <button
+        class="boton preguntar"
+        id="boton"
+        onclick="preguntar()"
+      >
+        Preguntar
+      </button>
+    </div>
+
+    <div class="estado-voz" id="estadoVoz"></div>
+
+    <div class="respuesta" id="respuesta">
+      Aquí aparecerá la respuesta.
+    </div>
+    <div class="continuar" id="continuar"></div>
+   <div class="historial" id="historial" style="display:none;">
+  <h3>Historial de esta aventura</h3>
+  <div id="listaHistorial"></div>
+</div>
+
+
+    <div class="respuesta-acciones">
+      <button class="escuchar" onclick="escucharRespuesta()">
+        🔊 Escuchar respuesta
+      </button>
+
+      <button class="escuchar" onclick="detenerVoz()">
+        ⏹️ Detener voz
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    let temaSeleccionado = "";
+    function guardarSesion() {
+  const datos = {
+    tema: temaSeleccionado,
+    pregunta: document.getElementById("pregunta").value,
+    respuesta: document.getElementById("respuesta").textContent,
+    respuestaCompleta: window.ultimaRespuestaCompleta || "",
+    historial: document.getElementById("listaHistorial").innerHTML
+  };
+
+  localStorage.setItem(
+    "xerioXoxialSesion",
+    JSON.stringify(datos)
+  );
+}
+
+function restaurarSesion() {
+  const guardado = localStorage.getItem("xerioXoxialSesion");
+
+  if (!guardado) {
+    return;
+  }
+
+  const datos = JSON.parse(guardado);
+
+  if (datos.pregunta) {
+  document.getElementById("pregunta").value = datos.pregunta;
+}
+
+if (datos.respuesta) {
+  document.getElementById("respuesta").textContent = datos.respuesta;
+}
+
+if (datos.respuestaCompleta) {
+  window.ultimaRespuestaCompleta = datos.respuestaCompleta;
+  crearBotonContinuar(datos.respuestaCompleta);
+}
+
+
+
+  if (datos.historial) {
+    document.getElementById("listaHistorial").innerHTML = datos.historial;
+    document.getElementById("historial").style.display = "block";
+  }
+
+  if (datos.tema) {
+    const botones = document.querySelectorAll(".tema");
+
+    botones.forEach(boton => {
+      if (boton.textContent.includes(datos.tema)) {
+        seleccionarTema(boton, datos.tema);
+      }
+    });
+  }
+}
+
+window.addEventListener("load", restaurarSesion);
+    
+    const preguntasSugeridas = {
+  "Ciencia y Tierra": [
+    "¿Por qué los volcanes hacen erupción?",
+    "¿Cómo se forman los terremotos?",
+    "¿Por qué llueve?"
+  ],
+  "Espacio": [
+    "¿Por qué brillan las estrellas?",
+    "¿Qué es un agujero negro?",
+    "¿Por qué la Luna cambia de forma?"
+  ],
+  "Historia": [
+    "¿Quiénes fueron los mayas?",
+    "¿Cómo vivían los antiguos egipcios?",
+    "¿Quién construyó las pirámides?"
+  ],
+  "Animales": [
+    "¿Por qué los gatos ronronean?",
+    "¿Cómo duermen los delfines?",
+    "¿Por qué las jirafas tienen el cuello largo?"
+  ],
+  "Tecnología y Ciencia": [
+    "¿Cómo funciona una computadora?",
+    "¿Qué es la inteligencia artificial?",
+    "¿Cómo funciona internet?"
+  ],
+  "Curiosidades": [
+    "¿Por qué bostezamos?",
+    "¿Por qué soñamos?",
+    "¿Por qué el cielo es azul?"
+  ]
+};
+
+    let reconocimiento = null;
+    let escuchando = false;
+
+    function seleccionarTema(boton, tema) {
+  temaSeleccionado = tema;
+
+  document.querySelectorAll(".tema").forEach(btn => {
+    btn.classList.remove("activo");
+  });
+
+  boton.classList.add("activo");
+
+  document.getElementById("seleccion").textContent =
+    "Tema seleccionado: " + tema;
+
+  const contenedor = document.getElementById("sugerencias");
+  contenedor.innerHTML = "";
+
+  preguntasSugeridas[tema].forEach(pregunta => {
+    const btn = document.createElement("button");
+    btn.className = "sugerencia";
+    btn.textContent = pregunta;
+
+    btn.onclick = () => {
+      document.getElementById("pregunta").value = pregunta;
+    };
+   
+    contenedor.appendChild(btn);
+  });
+  guardarSesion();
+}
+
+   function sorprendeme() {
+  let lista = [];
+
+  if (temaSeleccionado && preguntasSugeridas[temaSeleccionado]) {
+    lista = preguntasSugeridas[temaSeleccionado];
+  } else {
+    lista = Object.values(preguntasSugeridas).flat();
+  }
+
+  const preguntaAleatoria =
+    lista[Math.floor(Math.random() * lista.length)];
+
+  document.getElementById("pregunta").value = preguntaAleatoria;
+  preguntar();
+}
+
+function nuevaAventura() {
+  temaSeleccionado = "";
+
+  document.querySelectorAll(".tema").forEach(btn => {
+    btn.classList.remove("activo");
+  });
+
+  document.getElementById("seleccion").textContent =
+    "Ningún tema seleccionado";
+
+  document.getElementById("sugerencias").innerHTML = "";
+  document.getElementById("pregunta").value = "";
+  document.getElementById("respuesta").textContent =
+    "Aquí aparecerá la respuesta.";
+  document.getElementById("continuar").innerHTML = "";
+  document.getElementById("historial").style.display = "none";
+  document.getElementById("listaHistorial").innerHTML = "";
+  document.getElementById("estadoVoz").textContent = "";
+
+  window.speechSynthesis.cancel();
+  localStorage.removeItem("xerioXoxialSesion");
+}
+
+    function activarMicrofono() {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+      const estado = document.getElementById("estadoVoz");
+      const botonMicro = document.getElementById("microfono");
+
+      if (!SpeechRecognition) {
+        estado.textContent =
+          "Tu navegador no permite reconocimiento de voz. Prueba con Chrome o Edge.";
+        return;
+      }
+
+      if (escuchando && reconocimiento) {
+        reconocimiento.stop();
+        return;
+      }
+
+      reconocimiento = new SpeechRecognition();
+      reconocimiento.lang = "es-MX";
+      reconocimiento.continuous = false;
+      reconocimiento.interimResults = false;
+
+      reconocimiento.onstart = () => {
+        escuchando = true;
+        botonMicro.classList.add("escuchando");
+        botonMicro.textContent = "🎤 Escuchando...";
+        estado.textContent = "Habla ahora.";
+      };
+
+      reconocimiento.onresult = (event) => {
+        const texto = event.results[0][0].transcript;
+        document.getElementById("pregunta").value = texto;
+        estado.textContent = "Te escuché: " + texto;
+      };
+
+      reconocimiento.onerror = (event) => {
+        estado.textContent =
+          "No pude escuchar bien. Intenta otra vez.";
+      };
+
+      reconocimiento.onend = () => {
+        escuchando = false;
+        botonMicro.classList.remove("escuchando");
+        botonMicro.textContent = "🎤 Preguntar hablando";
+      };
+
+      reconocimiento.start();
+    }
+
+    async function preguntar() {
+      const pregunta = document.getElementById("pregunta").value.trim();
+      const respuesta = document.getElementById("respuesta");
+      const boton = document.getElementById("boton");
+
+      if (!pregunta) {
+        respuesta.textContent = "Escribe o di una pregunta primero.";
+        return;
+      }
+
+      boton.disabled = true;
+      boton.textContent = "Xerio está pensando...";
+      respuesta.textContent = "Buscando una buena explicación...";
+
+      try {
+        const res = await fetch("/api/preguntar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            pregunta,
+            temaSeleccionado
+          })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || "Ocurrió un error.");
+        }
+
+        window.ultimaRespuestaCompleta = data.respuesta;
+
+        const marcador = "Pregunta para seguir aprendiendo:";
+const indice = data.respuesta.lastIndexOf(marcador);
+
+let textoPrincipal = data.respuesta;
+
+if (indice !== -1) {
+  textoPrincipal = data.respuesta.substring(0, indice).trim();
+}
+
+respuesta.textContent = textoPrincipal;
+crearBotonContinuar(data.respuesta);
+agregarAlHistorial(pregunta, textoPrincipal);
+guardarSesion();
+
+      } catch (error) {
+        respuesta.textContent =
+          "No pude obtener la respuesta. Revisa la conexión con Gemini.";
+      } finally {
+        boton.disabled = false;
+        boton.textContent = "Preguntar";
+      }
+    }
+
+    function agregarAlHistorial(pregunta, respuestaTexto) {
+  const lista = document.getElementById("listaHistorial");
+  document.getElementById("historial").style.display = "block";
+
+  const item = document.createElement("div");
+  item.className = "item-historial";
+
+  const preguntaDiv = document.createElement("div");
+  preguntaDiv.className = "pregunta-historial";
+  preguntaDiv.textContent = "Tú: " + pregunta;
+
+  const respuestaDiv = document.createElement("div");
+  respuestaDiv.className = "respuesta-historial";
+  respuestaDiv.textContent = "Xerio & Xoxial: " + respuestaTexto;
+
+  item.appendChild(preguntaDiv);
+  item.appendChild(respuestaDiv);
+
+  lista.prepend(item);
+  guardarSesion();
+}
+
+    function crearBotonContinuar(texto) {
+  const continuar = document.getElementById("continuar");
+  continuar.innerHTML = "";
+
+  const marcador = "Pregunta para seguir aprendiendo:";
+  const indice = texto.lastIndexOf(marcador);
+
+  if (indice === -1) {
+    return;
+  }
+
+  const pregunta = texto
+    .substring(indice + marcador.length)
+    .trim();
+
+  if (!pregunta) {
+    return;
+  }
+
+  const boton = document.createElement("button");
+  boton.innerHTML = `
+  <div style="font-size:16px; margin-bottom:4px;">
+    ➡️ Seguir aprendiendo
+  </div>
+  <div style="font-size:13px; font-weight:normal;">
+    ${pregunta}
+  </div>
+`;
+
+  boton.onclick = () => {
+    document.getElementById("pregunta").value = pregunta;
+    preguntar();
+  };
+
+  continuar.appendChild(boton);
+}
+    
+    function escucharRespuesta() {
+      const texto = document.getElementById("respuesta").textContent.trim();
+
+      if (!texto || texto === "Aquí aparecerá la respuesta.") {
+        return;
+      }
+
+      window.speechSynthesis.cancel();
+
+      const voz = new SpeechSynthesisUtterance(texto);
+      voz.lang = "es-MX";
+      voz.rate = 0.95;
+      voz.pitch = 1;
+
+      window.speechSynthesis.speak(voz);
+    }
+
+    function detenerVoz() {
+      window.speechSynthesis.cancel();
+    }
+  </script>
+
+</body>
+</html>
