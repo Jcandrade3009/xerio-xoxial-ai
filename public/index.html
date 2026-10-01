@@ -712,6 +712,15 @@ guardarSesion();
   continuar.appendChild(boton);
 }
     
+    function limpiarTextoParaVoz(texto) {
+  return texto
+    .replace(/\*/g, "")
+    .replace(/_/g, "")
+    .replace(/#{1,6}\s?/g, "")
+    .replace(/`/g, "")
+    .trim();
+}
+
     function escucharRespuesta() {
       const texto = document.getElementById("respuesta").textContent.trim();
 
@@ -721,7 +730,8 @@ guardarSesion();
 
       window.speechSynthesis.cancel();
 
-      const voz = new SpeechSynthesisUtterance(texto);
+      const textoLimpio = limpiarTextoParaVoz(texto);
+      const voz = new SpeechSynthesisUtterance(textoLimpio);
       voz.lang = "es-MX";
       voz.rate = 0.95;
       voz.pitch = 1;
