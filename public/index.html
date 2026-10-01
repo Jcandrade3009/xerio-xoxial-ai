@@ -597,12 +597,15 @@ reconocimiento.onend = () => {
 
   if (enviarAlTerminar) {
     enviarAlTerminar = false;
-    preguntar();
+
+    setTimeout(() => {
+      document.getElementById("boton").click();
+    }, 700);
   }
 };
-      reconocimiento.start();
-    }
 
+reconocimiento.start();
+}
     async function preguntar() {
       const pregunta = document.getElementById("pregunta").value.trim();
       const respuesta = document.getElementById("respuesta");
