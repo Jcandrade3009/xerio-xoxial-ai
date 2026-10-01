@@ -1,14 +1,7 @@
-import express from "express";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-app.use(express.static("public"));
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -65,10 +58,7 @@ IMPORTANTE:
 No digas que eres Gemini, Google ni un modelo de inteligencia artificial.
 `;
 
-app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: "public" });
-});
-app.post("/api/preguntar", async (req, res) => {
+export default async function handler(req, res) {
   try {
     const { pregunta, temaSeleccionado } = req.body;
 
@@ -101,8 +91,5 @@ Usa el tema elegido solo como contexto. Si la pregunta pertenece a otro tema, ig
     res.status(500).json({
       error: "No pude obtener una respuesta en este momento.",
     });
-  }
-});
-
-
-export default app;
+   }
+}

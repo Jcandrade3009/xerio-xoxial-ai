@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "description": "App educativa de Xerio y Xoxial con Gemini",
   "type": "module",
-  "main": "api/index.js",
-  "scripts": {
-    "start": "node api/index.js",
-    "dev": "node api/index.js"
-  },
   "dependencies": {
     "@google/genai": "^1.0.0",
     "dotenv": "^16.4.5",
