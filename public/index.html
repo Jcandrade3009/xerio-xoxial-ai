@@ -569,6 +569,7 @@ function nuevaAventura() {
       reconocimiento.continuous = false;
       reconocimiento.interimResults = false;
 
+      let enviarAlTerminar = false;
       reconocimiento.onstart = () => {
         escuchando = true;
         botonMicro.classList.add("escuchando");
@@ -580,23 +581,25 @@ function nuevaAventura() {
   const texto = event.results[0][0].transcript;
   document.getElementById("pregunta").value = texto;
   estado.textContent = "Te escuché: " + texto;
-
-  setTimeout(() => {
-    preguntar();
-  }, 500);
+  enviarAlTerminar = true;
 };
- 
-      reconocimiento.onerror = (event) => {
-        estado.textContent =
-          "No pude escuchar bien. Intenta otra vez.";
-      };
 
-      reconocimiento.onend = () => {
-        escuchando = false;
-        botonMicro.classList.remove("escuchando");
-        botonMicro.textContent = "🎤 Preguntar hablando";
-      };
+reconocimiento.onerror = (event) => {
+  enviarAlTerminar = false;
+  estado.textContent =
+    "No pude escuchar bien. Intenta otra vez.";
+};
 
+reconocimiento.onend = () => {
+  escuchando = false;
+  botonMicro.classList.remove("escuchando");
+  botonMicro.textContent = "🎤 Preguntar hablando";
+
+  if (enviarAlTerminar) {
+    enviarAlTerminar = false;
+    preguntar();
+  }
+};
       reconocimiento.start();
     }
 
