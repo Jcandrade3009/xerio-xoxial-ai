@@ -104,8 +104,5 @@ Usa el tema elegido solo como contexto. Si la pregunta pertenece a otro tema, ig
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Xerio & Xoxial funcionando en http://localhost:${PORT}`);
-});
 
 export default app;
