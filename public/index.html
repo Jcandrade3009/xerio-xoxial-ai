@@ -576,12 +576,16 @@ function nuevaAventura() {
         estado.textContent = "Habla ahora.";
       };
 
-      reconocimiento.onresult = (event) => {
-        const texto = event.results[0][0].transcript;
-        document.getElementById("pregunta").value = texto;
-        estado.textContent = "Te escuché: " + texto;
-      };
+        reconocimiento.onresult = (event) => {
+  const texto = event.results[0][0].transcript;
+  document.getElementById("pregunta").value = texto;
+  estado.textContent = "Te escuché: " + texto;
 
+  setTimeout(() => {
+    preguntar();
+  }, 500);
+};
+ 
       reconocimiento.onerror = (event) => {
         estado.textContent =
           "No pude escuchar bien. Intenta otra vez.";
