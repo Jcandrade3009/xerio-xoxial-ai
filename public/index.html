@@ -596,12 +596,13 @@ reconocimiento.onend = () => {
   botonMicro.textContent = "🎤 Preguntar hablando";
 
   if (enviarAlTerminar) {
-    enviarAlTerminar = false;
+  enviarAlTerminar = false;
+  estado.textContent = "Enviando pregunta automáticamente...";
 
-    setTimeout(() => {
-      document.getElementById("boton").click();
-    }, 700);
-  }
+  setTimeout(() => {
+    preguntar();
+  }, 1000);
+}
 };
 
 reconocimiento.start();
